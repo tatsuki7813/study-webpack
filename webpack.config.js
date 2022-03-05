@@ -1,7 +1,10 @@
 const path = require("path");
 
+const MODE = "development";
+const sourceMapStatus = MODE === "development";
+
 module.exports = {
-  mode: "development",
+  mode: MODE,
   context: path.join(__dirname, "src"),
   entry: "./index.js",
   output: {
@@ -13,7 +16,10 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [
+          "style-loader",
+          { loader: "css-loader", options: { sourceMap: sourceMapStatus } },
+        ],
       },
     ],
   },
