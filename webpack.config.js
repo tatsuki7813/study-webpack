@@ -1,27 +1,38 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
-const MODE = "development";
-const sourceMapStatus = MODE === "development";
-
 module.exports = {
-  mode: MODE,
+  mode: "development",
   context: path.join(__dirname, "src"),
-  entry: "./index.js",
+  entry: "./app.jsx",
   output: {
-    clean: true,
     path: path.join(__dirname, "dist"),
-    filename: "./assets/js/main.js",
+    filename: "./app.js",
+  },
+  resolve: {
+    modules: [path.join(__dirname, "node_modules")],
+    extensions: [".js", ".jsx"],
   },
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: [/\.js$/, /\.jsx$/],
         use: [
-          "style-loader",
-          { loader: "css-loader", options: { sourceMap: sourceMapStatus } },
+          {
+            loader: "babel-loader",
+            options: { presets: ["@babel/preset-env", "@babel/preset-react"] },
+          },
         ],
       },
     ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({ template: path.join(__dirname, "src/index.html") }),
+  ],
+  devServer: {
+    static: {
+      directory: path.join(__dirname, "dist"),
+    },
   },
   devtool: "hidden-source-map",
 };
